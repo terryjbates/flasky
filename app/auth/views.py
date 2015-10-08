@@ -11,16 +11,17 @@ from .forms import LoginForm, RegistrationForm, ChangePasswordForm,\
 
 @auth.before_app_request
 def before_request():
-    if current_user.is_authenticated():
+    if current_user.is_authenticated:
         current_user.ping()
         if not current_user.confirmed \
-                and request.endpoint[:5] != 'auth.':
+                and request.endpoint[:5] != 'auth.' \
+                and request.endpoint != 'static':
             return redirect(url_for('auth.unconfirmed'))
 
 
 @auth.route('/unconfirmed')
 def unconfirmed():
-    if current_user.is_anonymous() or current_user.confirmed:
+    if current_user.is_anonymous or current_user.confirmed:
         return redirect(url_for('main.index'))
     return render_template('auth/unconfirmed.html')
 
@@ -101,7 +102,7 @@ def change_password():
 
 @auth.route('/reset', methods=['GET', 'POST'])
 def password_reset_request():
-    if not current_user.is_anonymous():
+    if not current_user.is_anonymous:
         return redirect(url_for('main.index'))
     form = PasswordResetRequestForm()
     if form.validate_on_submit():
@@ -120,7 +121,7 @@ def password_reset_request():
 
 @auth.route('/reset/<token>', methods=['GET', 'POST'])
 def password_reset(token):
-    if not current_user.is_anonymous():
+    if not current_user.is_anonymous:
         return redirect(url_for('main.index'))
     form = PasswordResetForm()
     if form.validate_on_submit():

@@ -1,5 +1,6 @@
 import re
 import threading
+import time
 import unittest
 from selenium import webdriver
 from app import create_app, db
@@ -45,6 +46,9 @@ class SeleniumTestCase(unittest.TestCase):
 
             # start the Flask server in a thread
             threading.Thread(target=cls.app.run).start()
+            # give the server a second to ensure it is up
+            time.sleep(1) 
+
 
     @classmethod
     def tearDownClass(cls):
